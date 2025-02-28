@@ -16,8 +16,12 @@ services:
     environment:
       - XDEBUG_MODE=debug
       - XDEBUG_CONFIG="client_host=host.docker.internal"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     networks:
       - lead-manager-network
+    depends_on:
+      - mysql
 
   nginx:
     image: nginx:alpine
@@ -35,17 +39,20 @@ services:
 
   mysql:
     image: mysql:8.0
+    command: --bind-address=0.0.0.0 
     container_name: mysql
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: laravel
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_PASSWORD: secret
-      MYSQL_USER: laravel
+      MYSQL_DATABASE: leadmanager
+      MYSQL_PASSWORD: lead123
+      MYSQL_USER: lead
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
        - lead-manager-network
+    ports:
+      - "3306:3306"
 
 volumes:
   mysql-data:
