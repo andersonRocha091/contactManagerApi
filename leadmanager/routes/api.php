@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Domains\User\Controllers\UserController;
+use App\Domains\Client\Controllers\ClientController;
 
-Route::get('hello', [UserController::class, 'index']);
+Route::post('/client', [ClientController::class, 'create']);

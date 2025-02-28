@@ -1,5 +1,7 @@
 <?php
 
+namespace App\Domains\Client\Repositories;
+
 use App\Domains\Client\Domain\Entities\Client;
 use App\Domains\Client\Repositories\ClientRepositoryInterface;
 
