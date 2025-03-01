@@ -7,6 +7,8 @@ use App\Domains\Client\Repositories\ClientRepositoryInterface;
 use App\Domains\Client\Repositories\EloquentClientRepository;
 use App\Domains\Client\Services\ClientService;
 use App\Domains\Client\Domain\Entities\Client;
+use App\Domains\Auth\Services\UserService;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -19,6 +21,10 @@ class AppServiceProvider extends ServiceProvider
         });
         $this->app->singleton(ClientService::class, function ($app) {
             return new ClientService($app->make(ClientRepositoryInterface::class));
+        });
+
+        $this->app->singleton(UserService::class, function ($app) {
+            return new UserService();
         });
     }
 

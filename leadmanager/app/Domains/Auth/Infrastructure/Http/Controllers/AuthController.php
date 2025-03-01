@@ -3,7 +3,6 @@
 namespace App\Domains\Auth\Infrastructure\Http\Controllers;
 
 use App\Domains\Auth\Domain\Models\User;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -11,57 +10,58 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use App\Domains\Auth\Services\UserService;
 
+class AuthController extends Controller
+{
+    protected $userService;
+    protected $jwtAuth;
+    protected $auth;
 
-class AuthController extends Controller {
+    public function __construct(UserService $userService, JWTAuth $jwtAuth, Auth $auth)
+    {
+        $this->userService = $userService;
+        $this->jwtAuth = $jwtAuth;
+        $this->auth = $auth;
+    }
 
-    public function register(Request $request) {
-
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
-        ]);
+    public function register(Request $request)
+    {
+        $validator = $this->validateRegister($request);
 
         if ($validator->fails()) {
             return response()->json($validator->errors()->toJson(), 400);
         }
 
-        $user = User::create([
-            'name' => $request->get('name'),
-            'email' => $request->get('email'),
-            'password' => Hash::make($request->get('password')),
-        ]);
+        $user = $this->userService->createUser($request->all());
+        $token = $this->jwtAuth::fromUser($user);
 
-        $token = JWTAuth::fromUser($user);
-
-        return response()->json(compact('user','token'), 201);
+        return response()->json(compact('user', 'token'), 201);
     }
 
-    public function login(Request $request) {
-
-        $credentials = $request->only('email','password');
+    public function login(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
 
         try {
-            
-            if (! $token = Auth::guard('api')->attempt($credentials)) {
+            if (! $token = $this->auth::guard('api')->attempt($credentials)) {
                 return response()->json(['error' => 'Invalid Credentials'], 401);
             }
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => Auth::guard('api')->factory()->getTTL() * 60
+                'expires_in' => $this->auth::guard('api')->factory()->getTTL() * 60
             ]);
         } catch (JWTException $e) {
-            return response()->json(['error' => 'Couldnt create token'], 500);
+            return response()->json(['error' => 'Could not create token'], 500);
         }
     }
 
-    public function getUser() {
-
+    public function getUser()
+    {
         try {
-            if (!$user = JWTAuth::parseToken()->authenticate()) {
+            if (! $user = $this->jwtAuth::parseToken()->authenticate()) {
                 return response()->json(['error' => 'User not found'], 404);
             }
         } catch (\Throwable $th) {
@@ -71,10 +71,19 @@ class AuthController extends Controller {
         return response()->json(compact('user'));
     }
 
-    public function logout() {
-        
-        JWTAuth::invalidate(JWTAuth::getToken());
+    public function logout()
+    {
+        $this->jwtAuth::invalidate($this->jwtAuth::getToken());
 
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    protected function validateRegister(Request $request)
+    {
+        return Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:6',
+        ]);
     }
 }
