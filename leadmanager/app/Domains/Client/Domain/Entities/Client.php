@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Client extends Model {
 
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -25,6 +25,5 @@ class Client extends Model {
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
-        'deleted_at' => 'datetime',
     ];
 }

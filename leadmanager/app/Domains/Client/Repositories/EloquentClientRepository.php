@@ -13,7 +13,7 @@ class EloquentClientRepository implements ClientRepositoryInterface {
         $this->model = $client;
     }
 
-    public function getAll(array $filters = []) {
+    public function getAll(array $filters = [], $perPage, $page) {
         $query = $this->model->newQuery();
 
         if (isset($filters['age'])) {
@@ -32,7 +32,7 @@ class EloquentClientRepository implements ClientRepositoryInterface {
             $query->where('email', 'like', '%' . $filters['email'] . '%');
         }
 
-        return $query->paginate(15);
+        return $query->paginate($page, ['*'], 'page', $page);
     }
 
     public function getById(int $id) {
@@ -51,7 +51,6 @@ class EloquentClientRepository implements ClientRepositoryInterface {
 
     public function delete(int $id) {
         $client = $this->getById($id);
-        $client->delete();
         return $client->delete();
     }
    
