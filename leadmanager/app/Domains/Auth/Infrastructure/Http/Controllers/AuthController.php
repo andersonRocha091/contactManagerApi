@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 
 
@@ -43,13 +44,15 @@ class AuthController extends Controller {
 
         try {
             
-            if (! $token = JWTAuth::attemp($credentials)) {
+            if (! $token = Auth::guard('api')->attempt($credentials)) {
                 return response()->json(['error' => 'Invalid Credentials'], 401);
             }
 
-            $user = auth()->user();
-
-            return response()->json(compact('token'));
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => Auth::guard('api')->factory()->getTTL() * 60
+            ]);
         } catch (JWTException $e) {
             return response()->json(['error' => 'Couldnt create token'], 500);
         }

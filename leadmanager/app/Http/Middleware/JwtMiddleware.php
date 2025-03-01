@@ -10,6 +10,10 @@ class JwtMiddleware {
     
     public function handle($request, Closure $next) {
 
+        if ($request->is('api/register', 'api/login')) {
+            return $next($request);
+        }
+        
         try {
             $user = JWTAuth::parseToken()->authenticate();
         } catch (JWTException $e) {

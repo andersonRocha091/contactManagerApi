@@ -7,7 +7,18 @@ use Illuminate\Foundation\Auth\User as Authenticable;
 
 class User extends Authenticable implements JWTSubject {
 
-	/**
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    
+    /**
 	 * Get the identifier that will be stored in the subject claim of the JWT.
 	 *
 	 * @return mixed
