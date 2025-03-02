@@ -8,6 +8,7 @@ use App\Domains\Client\Repositories\EloquentClientRepository;
 use App\Domains\Client\Services\ClientService;
 use App\Domains\Client\Domain\Entities\Client;
 use App\Domains\Auth\Services\UserService;
+use App\Domains\Client\Listeners\CreateClientListener;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(UserService::class, function ($app) {
             return new UserService();
+        });
+
+        $this->app->singleton(CreateClientListener::class, function ($app) {
+            return new CreateClientListener($app->make(ClientService::class));
         });
     }
 

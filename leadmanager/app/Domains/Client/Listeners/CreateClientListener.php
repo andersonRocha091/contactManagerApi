@@ -5,10 +5,9 @@ namespace App\Domains\Client\Listeners;
 use App\Domains\Webhook\Events\WebhookReceived;
 use App\Domains\Client\Services\ClientService;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class CreateClientListener implements ShouldQueue
+class CreateClientListener
 {
 
     use InteractsWithQueue;

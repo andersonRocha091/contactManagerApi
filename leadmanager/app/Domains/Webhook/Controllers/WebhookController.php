@@ -26,7 +26,7 @@ class WebhookController extends Controller {
         ]);
 
          // Dispatch event
-         WebhookReceived::dispatch($validated);
+         event(new WebhookReceived($validated));
 
          return response()->json(['message' => 'Webhook received'], 200);
     }

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Domains\Client\Controllers\ClientController;
 use App\Domains\Auth\Infrastructure\Http\Controllers\AuthController;
+use App\Domains\Webhook\Controllers\WebhookController;
 use App\Http\Middleware\JwtMiddleware;
 
 Route::get('/client', [ClientController::class, 'getAll']);
@@ -18,3 +19,5 @@ Route::middleware([JwtMiddleware::class])->group(function () {
     Route::get('user', [AuthController::class, 'getUser']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
+
+Route::post('webhook', [WebhookController::class, 'handler'])->withoutMiddleware(['auth']);
