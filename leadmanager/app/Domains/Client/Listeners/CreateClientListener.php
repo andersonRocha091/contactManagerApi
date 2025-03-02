@@ -7,7 +7,7 @@ use App\Domains\Client\Services\ClientService;
 use App\Domains\Shared\Exceptions\ClientCreationException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\InteractsWithQueue;
-
+use App\Domains\Shared\Events\ClientCreatedSuccesfully;
 class CreateClientListener
 {
 
@@ -26,7 +26,9 @@ class CreateClientListener
 
             $this->validateData($event->data);
 
-            $this->clientService->createClient($event->data);
+            $client = $this->clientService->createClient($event->data);
+            
+            event(new ClientCreatedSuccesfully($client));
 
         } catch (\InvalidArgumentException $e) {
 
