@@ -36,7 +36,21 @@ services:
        - lead-manager-network
     depends_on:
       - app
-
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    restart: unless-stopped
+    environment:
+      NGROK_AUTHTOKEN: 2tlKPELI4KeasuN7Nsgdk4sJRMK_HBj1nvAz3LQtFcZKYttm
+    command: 
+      - "http"
+      - "nginx:80"  # Direct container-to-container communication
+    networks:
+      - lead-manager-network
+    depends_on:
+     - nginx
+    ports:
+      - 4040:4040
   mysql:
     image: mysql:8.0
     command: --bind-address=0.0.0.0 
