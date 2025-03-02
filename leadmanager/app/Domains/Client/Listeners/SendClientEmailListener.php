@@ -25,7 +25,7 @@ class SendClientEmailListener
     }
 
     protected function dispatchJob($client) {
-        return SendClientEmailJob::dispatch($client)
+        SendClientEmailJob::dispatch($client)
             ->delay(now()->addSeconds(5));
     }
 }

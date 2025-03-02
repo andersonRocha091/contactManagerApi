@@ -10,7 +10,7 @@ class JwtMiddleware {
     
     public function handle($request, Closure $next) {
 
-        if ($request->is('api/register', 'api/login', 'api/webhook')) {
+        if ($request->is('api/register', 'api/login', 'api/webhook', 'api/test-email')) {
             return $next($request);
         }
 
