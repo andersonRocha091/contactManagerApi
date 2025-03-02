@@ -39,8 +39,8 @@ class CreateClientListener
                 400, 
                 $e
             );
-            
-        } catch (\Trowable $e) {
+
+        } catch (\Throwable $e) {
              Log::critical("Client creation failed: {$e->getMessage()}", [
                 'payload' => $event->data,
                 'trace' => $e->getTraceAsString()
