@@ -18,6 +18,11 @@ class WebhookController extends Controller
 
             $data = $request->all();
 
+            $isInitalRequest = $this->isInitialTokenRequest($data);
+            if ($isInitalRequest) {
+                return response()->json($request->input('token'), 200);
+            }
+
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|max:255',
@@ -31,7 +36,7 @@ class WebhookController extends Controller
             ]);
 
             event(new WebhookReceived($validated));
-            
+
         } catch (ClientCreationException $e) {
 
             return response()->json([
@@ -46,5 +51,14 @@ class WebhookController extends Controller
         }
 
         return response()->json(['message' => 'Webhook received'], 200);
+    }
+
+    private function isInitialTokenRequest(array $data = []): bool {
+        
+        if(empty($data)) {
+            return false;
+        }
+
+        return isset($data['token']) && $data['validToken']; 
     }
 }
