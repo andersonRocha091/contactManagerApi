@@ -10,8 +10,10 @@ use App\Domains\Client\Domain\Entities\Client;
 use App\Domains\Auth\Services\UserService;
 use App\Domains\Client\Listeners\CreateClientListener;
 
-class AppServiceProvider extends ServiceProvider
-{
+use App\Domains\Voip\Interfaces\VoipCallServiceInterface;
+use App\Domains\Voip\Infrastructure\Adapters\TwillioCallAdapter;
+
+class AppServiceProvider extends ServiceProvider {
     /**
      * Register any application services.
      */
@@ -30,6 +32,16 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(CreateClientListener::class, function ($app) {
             return new CreateClientListener($app->make(ClientService::class));
+        });
+
+        $this->app->bind(VoipCallServiceInterface::class, function () {
+            $provider = config('services.voip.provider', 'twilio');
+
+            switch ($provider) {
+                case 'twilio':
+                default:
+                    return new TwillioCallAdapter();
+            }
         });
     }
 
