@@ -4,7 +4,8 @@ namespace App\Domains\Client\Listeners;
 
 use App\Domains\Webhook\Events\WebhookReceived;
 use App\Domains\Client\Services\ClientService;
-
+use App\Domains\Shared\Exceptions\ClientCreationException;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Queue\InteractsWithQueue;
 
 class CreateClientListener
@@ -20,6 +21,38 @@ class CreateClientListener
     }
 
     public function handle(WebhookReceived $event) {
-        $this->clientService->createClient($event->data);
+        
+        try {
+
+            $this->validateData($event->data);
+
+            $this->clientService->createClient($event->data);
+
+        } catch (\InvalidArgumentException $e) {
+
+            Log::error("Invalid client data: {$e->getMessage()}", [
+                'payload' => $event->data,
+                'error' => $e
+            ]);
+            throw new ClientCreationException(
+                "Validation failed: {$e->getMessage()}", 
+                400, 
+                $e
+            );
+            
+        } catch (\Trowable $e) {
+             Log::critical("Client creation failed: {$e->getMessage()}", [
+                'payload' => $event->data,
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+
+    }
+
+    protected function validateData(array $data):void {
+    
+        if (empty($data['email']) || (empty($data['name']) || empty($data['age']))) {
+            throw new \InvalidArgumentException('There are missing required fields');
+        }       
     }
 }

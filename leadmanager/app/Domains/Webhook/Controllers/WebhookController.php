@@ -25,7 +25,6 @@ class WebhookController extends Controller {
             'age' => 'required|integer|min:1'
         ]);
 
-         // Dispatch event
          event(new WebhookReceived($validated));
 
          return response()->json(['message' => 'Webhook received'], 200);
