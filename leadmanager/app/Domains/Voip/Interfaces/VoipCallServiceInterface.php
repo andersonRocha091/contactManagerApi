@@ -2,16 +2,18 @@
 
 namespace App\Domains\Voip\Interfaces;
 
-use Twilio\Rest\Api\V2010\Account\CallInstance;
+use Illuminate\Http\Request;
 
 interface VoipCallServiceInterface {
- 
+    
     /**
-     * Initiates a VOIP call to the given phone number using the specified TwiML (or equivalent) URL.
+     * Generates a token that will enable front end application conect to twilio voice service
      *
-     * @param string $toPhoneNumber Destination phone number in E.164 format.
-     * @param string $instructionUrl URL that returns call instructions (e.g., TwiML for Twilio).
-     * @return mixed 
+     * @param string $identity - unique id for token generation
+     * @return string token generated
+     * @throw exception case its an invalid token
+     * 
      */
-    public function initiateCall(string $toPhoneNumber, string $instructionUrl);
+    public function generateToken($identity);
+
 }

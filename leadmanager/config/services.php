@@ -40,6 +40,10 @@ return [
             'sid'   => env('TWILIO_SID'),
             'token' => env('TWILIO_TOKEN'),
             'from'  => env('TWILIO_FROM'),
+            'apiKey'  => env('TWILIO_API_KEY'),
+            'apiSecret' => env('TWILIO_API_SECRET'),
+            'twilioNumber' => env('TWILIO_FROM'),
+            'appSid' => env('TWILIO_APP_SIP')
         ],
     ]
 

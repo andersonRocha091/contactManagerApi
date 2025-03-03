@@ -4,44 +4,79 @@ namespace App\Domains\Voip\Infrastructure\Adapters;
 use App\Domains\Voip\Interfaces\VoipCallServiceInterface;
 use Twilio\Rest\Client;
 use Twilio\Rest\Api\V2010\Account\CallInstance;
+use Twilio\Exceptions\RestException;
+use Twilio\Jwt\AccessToken;
+use Twilio\Jwt\Grants\VoiceGrant;
 use Illuminate\Support\Facades\Log;
 use Exception;
 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Illuminate\Http\Request;
+
 class TwillioCallAdapter implements VoipCallServiceInterface {
 
-    private Client $client;
-    private string $fromPhone;
+    protected $accountSid;
+    protected $apiKey;
+    protected $apiSecret;
+    protected $twilioNumber;
+    protected $appSid;
 
     public function __construct() {
         $config = config('services.voip.twilio');
-        $this->client = new Client($config['sid'], $config['token']);
-        $this->fromPhone = $config['from'];
+        $this->accountSid = $config['sid'];
+        $this->apiKey = $config['apiKey'];
+        $this->apiSecret = $config['apiSecret'];
+        $this->twilioNumber = $config['twilioNumber'];
+        $this->appSid = $config['appSid'];
     }
 
-    /**
-     * Function that starts everything needed to execute a call
-     * @param string $toPhoneNumber - destination phone
-     * @param string $instructionUrl - TwiML URL
-     * @return CallInstance
-     */
-    public function initiateCall(string $toPhoneNumber, string $instructionUrl): CallInstance {
+
+    public function generateToken($identity) {
+        
         try {
-            return $this->client->calls->create(
-                $toPhoneNumber,
-                $this->fromPhone,
-                ['url' => $instructionUrl]
+            $customKey = $this->apiKey."asdf";
+            $token = new AccessToken(
+                $this->accountSid,
+                $customKey,
+                $this->apiSecret,
+                3600,
+                $identity
             );
-        } catch (Exception $e) {
-            Log::error('Failed to initiate call: ' . $e->getMessage(), [
-                'toPhoneNumber' => $toPhoneNumber,
-                'instructionUrl' => $instructionUrl,
-                'error' => $e
-            ]);
-            throw $e;
+
+            $voiceGrant = new VoiceGrant();
+            $voiceGrant->setOutgoingApplicationSid($this->appSid);
+            $voiceGrant->setIncomingAllow(true);
+            $token->addGrant($voiceGrant);
+
+            $token = $token->toJWT();
+
+            $valid = $this->isValidToken($token);
+            
+            if (isset($valid['status']) && $valid['status'] === 'invalid') {
+                throw new Exception('Couldnt create a token for the credentials provided', 400);
+            }
+
+            return $token;
+
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 
-    public function setClient(Client $client): void {
-        $this->client = $client;
+    private function isValidToken($token) {
+        
+        if (empty($token)) {
+            throw new Exception('No data found on token', 400);
+        }
+        try {
+            $decoded = JWT::decode($token, new Key($this->apiSecret, 'HS256'));
+            return ['status' => 'valid',
+                'data' => (array) $decoded];
+        } catch (Exception $e) {
+            return ['status' => 'invalid', 
+            'error' => $e->getMessage()];
+        }
+
     }
 }
