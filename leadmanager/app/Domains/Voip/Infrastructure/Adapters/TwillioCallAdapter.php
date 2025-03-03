@@ -2,28 +2,35 @@
 namespace App\Domains\Voip\Infrastructure\Adapters;
 
 use App\Domains\Voip\Interfaces\VoipCallServiceInterface;
-use Twilio\Rest\Client;
-use Twilio\Rest\Api\V2010\Account\CallInstance;
-use Twilio\Exceptions\RestException;
 use Twilio\Jwt\AccessToken;
 use Twilio\Jwt\Grants\VoiceGrant;
-use Illuminate\Support\Facades\Log;
 use Exception;
-
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Illuminate\Http\Request;
+use Tests\Mocks\JWTMock;
 
 class TwillioCallAdapter implements VoipCallServiceInterface {
-
     protected $accountSid;
     protected $apiKey;
     protected $apiSecret;
     protected $twilioNumber;
     protected $appSid;
+    protected $jwt;
 
-    public function __construct() {
+    public function __construct($jwt = null) {
         $config = config('services.voip.twilio');
+        $this->accountSid = $config['sid'];
+        $this->apiKey = $config['apiKey'];
+        $this->apiSecret = $config['apiSecret'];
+        $this->twilioNumber = $config['twilioNumber'];
+        $this->appSid = $config['appSid'];
+        $this->jwt = $jwt ?? new JWT();
+    }
+    /**
+     * Included method to simplify the unit test mocking
+     * @param array $config
+     */
+    public function setConfig(array $config): void {
         $this->accountSid = $config['sid'];
         $this->apiKey = $config['apiKey'];
         $this->apiSecret = $config['apiSecret'];
@@ -31,11 +38,9 @@ class TwillioCallAdapter implements VoipCallServiceInterface {
         $this->appSid = $config['appSid'];
     }
 
-
     public function generateToken($identity) {
-        
         try {
-            $customKey = $this->apiKey."asdf";
+            $customKey = $this->apiKey;
             $token = new AccessToken(
                 $this->accountSid,
                 $customKey,
@@ -64,19 +69,15 @@ class TwillioCallAdapter implements VoipCallServiceInterface {
         }
     }
 
-    private function isValidToken($token) {
-        
+    public function isValidToken($token) {
         if (empty($token)) {
             throw new Exception('No data found on token', 400);
         }
         try {
-            $decoded = JWT::decode($token, new Key($this->apiSecret, 'HS256'));
-            return ['status' => 'valid',
-                'data' => (array) $decoded];
+            $decoded = $this->jwt->decode($token, new Key($this->apiSecret, 'HS256'));
+            return ['status' => 'valid', 'data' => (array) $decoded];
         } catch (Exception $e) {
-            return ['status' => 'invalid', 
-            'error' => $e->getMessage()];
+            return ['status' => 'invalid', 'error' => $e->getMessage()];
         }
-
     }
 }
