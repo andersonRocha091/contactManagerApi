@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\Domains\Client\Listeners\CreateClientListener;
 use App\Domains\Client\Services\ClientService;
+use App\Domains\Shared\Exceptions\ClientCreationException;
 use App\Domains\Webhook\Events\WebhookReceived;
 use Illuminate\Support\Facades\Log;
 use Mockery;
@@ -49,7 +50,7 @@ class CreateClientListenerTest extends TestCase {
             "age" => 12
         ]);
 
-        $this->expectException(\App\Domains\Shared\Exceptions\ClientCreationException::class);
+        $this->expectException(ClientCreationException::class);
         $listener->handle($event);
     }
 
