@@ -22,7 +22,7 @@ Route::middleware([JwtMiddleware::class])->group(function () {
 });
 
 Route::post('webhook', [WebhookController::class, 'handler'])->withoutMiddleware(['auth']);
-Route::post('voip/clients/{id}/call',[VoipCallController::class, 'getTokenForClient']);
+Route::get('voip/clients/{id}/token',[VoipCallController::class, 'getTokenForClient']);
 
 Route::get('/twiml/minimal', function () {
     
