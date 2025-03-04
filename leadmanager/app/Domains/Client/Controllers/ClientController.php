@@ -27,22 +27,26 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, $id) {
         
-        $updateFields = array_filter([
+        $updateFields = [
             'name' => $request->name,
             'email' => $request->email,
-            'phone' => $request->phone,
-            'address' => $request->address,
-            'city' => $request->city,
-            'state' => $request->state,
-            'zip' => $request->zip,
-            'picture' => $request->picture,
-            'age' => $request->age
-        ], function ($value) {
-            return !is_null($value);
-        });
-
-        $response = $this->clientService->updateClient($id, $updateFields);
-        return response()->json(['data' => $response]);
+            'mobile' => $request->has('mobile') ? $request->mobile : null,
+            'district' => $request->has('district') ? $request->district : null,
+            'phone' => $request->has('phone') ? $request->phone : null,
+            'address' => $request->has('address') ? $request->address : null,
+            'city' => $request->has('city') ? $request->city : null,
+            'state' => $request->has('state') ? $request->state : null,
+            'zip' => $request->has('zip') ? $request->zip : null,
+            'picture' => $request->has('picture') ? $request->picture : null,
+            'age' => $request->has('age') ? $request->age : null
+        ];
+        try {
+            $response = $this->clientService->updateClient($id, $updateFields, $request);
+            return response()->json(['data' => $response]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Client not updated. An unexpected error occurred.'], 500);
+        }
+       
     }
     
     public function getAll(Request $request) {

@@ -4,6 +4,7 @@ namespace App\Domains\Client\Services;
 
 use App\Domains\Client\Repositories\ClientRepositoryInterface;
 use App\Domains\Client\Entities\Client;
+use App\Domains\Client\Requests\UpdateClientRequest;
 use App\Domains\Shared\Events\ClientCreated;
 use Illuminate\Support\Facades\Event;
 use App\Domains\Shared\Exceptions\ClientNotFoundException;
@@ -28,12 +29,46 @@ class ClientService
         return $client;
     }
 
-    public function updateClient(int $clientId, array $data)
+    public function updateClient(int $clientId, array $data, ?UpdateClientRequest $request)
     {   
         $this->validateClientData($data, $clientId, 'update');
 
-        // Update client
-        return $this->clientRepository->update($clientId, $data);
+        $updateFields = $this->prepareDataToUpdate($request);
+        return $this->clientRepository->update($clientId, $updateFields);
+    }
+
+    /**
+     * Prepares the data to update a client based on the provided request.
+     *
+     * This function extracts the required and optional fields from the request
+     * and prepares an associative array with the fields that need to be updated.
+     * 
+     * It enables user sen full or partial payload, and only updating those explicitly sent
+     *
+     * @param UpdateClientRequest $request The request object containing the client data.
+     * @return array An associative array containing the fields to be updated.
+     */
+    private function prepareDataToUpdate(UpdateClientRequest $request): array {
+
+        $requiredFields = ['name', 'email'];
+        $optionalFields = [
+            'mobile', 'district', 'phone', 
+            'address', 'city', 'state', 
+            'zip', 'picture', 'age'
+        ];
+
+        $fieldsMustUpdate = [];
+
+        foreach($requiredFields as $field) {
+            $fieldsMustUpdate[$field] = $request->input($field);
+        }
+        foreach($optionalFields as $field) {
+            if ($request->has($field)) {
+                $fieldsMustUpdate[$field] = $request->input($field);
+            }
+        }
+
+        return $fieldsMustUpdate;
     }
 
     public function deleteClient(?int $clientId): bool

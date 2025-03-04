@@ -1,0 +1,41 @@
+_nullable.php
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        if (Schema::hasColumn('clients', 'age')) {
+            Schema::table('clients', function (Blueprint $table) {
+                $table->integer('age')->nullable()->change();
+            });
+        }
+
+        Schema::table('clients', function (Blueprint $table) {
+            $table->integer('age')->nullable()->default(null)->after('picture');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        if (Schema::hasColumn('clients', 'age')) {
+            Schema::table('clients', function (Blueprint $table) {
+                
+            });
+        }
+
+        Schema::table('clients', function (Blueprint $table) {
+            $table->integer('age')->nullable(false)->default(0)->after('picture');
+        });
+    }
+};

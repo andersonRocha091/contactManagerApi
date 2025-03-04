@@ -14,8 +14,10 @@ class Client extends Model {
         'name',
         'email',
         'phone',
+        'mobile',
         'address',
         'city',
+        'district',
         'state',
         'zip',
         'picture',
@@ -25,5 +27,6 @@ class Client extends Model {
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
+        'age' => 'integer'
     ];
 }

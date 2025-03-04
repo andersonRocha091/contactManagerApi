@@ -32,7 +32,7 @@ class EloquentClientRepository implements ClientRepositoryInterface {
             $query->where('email', 'like', '%' . $filters['email'] . '%');
         }
 
-        return $query->paginate($page, ['*'], 'page', $page);
+        return $query->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function getById(int $id) {

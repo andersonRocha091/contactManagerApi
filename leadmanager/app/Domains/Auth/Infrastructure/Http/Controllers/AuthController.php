@@ -11,6 +11,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Domains\Auth\Services\UserService;
+use App\Domains\User\Models\User\User as UserUser;
 
 class AuthController extends Controller
 {
@@ -47,7 +48,7 @@ class AuthController extends Controller
             if (! $token = $this->auth::guard('api')->attempt($credentials)) {
                 return response()->json(['error' => 'Invalid Credentials'], 401);
             }
-
+            
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'bearer',
