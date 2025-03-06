@@ -106,8 +106,7 @@ Request:
 {
     "name": "João Silva",
     "email": "joao@email.com",
-    "password": "senha123",
-    "password_confirmation": "senha123"
+    "password": "senha123"
 }
 
 Response: (201 Created)
@@ -162,10 +161,10 @@ GET /api/client
 
 Headers:
 Authorization: Bearer {token}
-
+{"data":{"current_page":1,"data":[{"id":25,"name":"Anderson Souza Rocha","email":"anderson.ecomp@proton.me","phone":"75991257325","address":"Avenida Sossego","city":"Feira de Santana","state":"Bahia","zip":"44077563","picture":"https:\/\/www.google.com.br","age":33,"created_at":"2025-03-02T20:23:34.000000Z","updated_at":"2025-03-04T20:56:29.000000Z","mobile":"75991257325","district":"Sim"},{"id":31,"name":"Amanda Ponce","email":"ponce.manda@gmail.com","phone":"75991253265","address":null,"city":null,"state":null,"zip":null,"picture":null,"age":null,"created_at":"2025-03-04T19:57:09.000000Z","updated_at":"2025-03-04T19:57:09.000000Z","mobile":"759912573256","district":null},{"id":33,"name":"Johnny","email":"jq@gmail.com","phone":"75991253265","address":null,"city":"Salvador","state":"Pernambuco","zip":null,"picture":null,"age":null,"created_at":"2025-03-04T19:57:09.000000Z","updated_at":"2025-03-04T19:57:09.000000Z","mobile":"759912573256","district":null},{"id":35,"name":"Isabela Cruz","email":"cruz.bela@conexa.app","phone":"759912573225","address":"Avenasdf","city":null,"state":"Sao paulo","zip":null,"picture":null,"age":null,"created_at":"2025-03-05T00:10:36.000000Z","updated_at":"2025-03-05T00:10:36.000000Z","mobile":"7599589621","district":"Sim"}],"first_page_url":"http:\/\/972f-45-167-53-188.ngrok-free.app\/api\/client?page=1","from":1,"last_page":1,"last_page_url":"http:\/\/972f-45-167-53-188.ngrok-free.app\/api\/client?page=1","links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"http:\/\/972f-45-167-53-188.ngrok-free.app\/api\/client?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"next_page_url":null,"path":"http:\/\/972f-45-167-53-188.ngrok-free.app\/api\/client","per_page":15,"prev_page_url":null,"to":4,"total":4}}
 Response: (200 OK)
-{
-    "data": [
+
+{"data":{"current_page":1, "data": [
         {
             "id": 1,
             "name": "Maria Santos",
@@ -177,11 +176,7 @@ Response: (200 OK)
             "created_at": "2024-03-04T10:00:00.000000Z"
         }
     ],
-    "meta": {
-        "current_page": 1,
-        "total": 10,
-        "per_page": 15
-    }
+    "first_page_url":"http:you-api-url-ngrok\/api\/client?page=1","from":1,"last_page":1,"last_page_url":"http:you-api-url-ngrok\/api\/client?page=1","links":[{"url":null,"label":"&laquo; Previous","active":false},{"url":"http:you-api-url-ngrok\/api\/client?page=1","label":"1","active":true},{"url":null,"label":"Next &raquo;","active":false}],"next_page_url":null,"path":"http:you-api-url-ngrok\/api\/client","per_page":15,"prev_page_url":null,"to":4,"total":4}}
 }
 ```
 
@@ -363,7 +358,7 @@ To run the tests:
 docker exec -it app bash -c "cd /var/www/leadmanager  && php artisan test --filter=TestName"
 
 # Run specific tests
-docker exec -it app php artisan test --filter=TestName
+docker exec -it app bash -c "cd /var/www/leadmanager  && php artisan test --filter=TestName"
 ```
 
 ## 📦 Project Structure
