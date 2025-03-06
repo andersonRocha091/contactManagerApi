@@ -1,6 +1,48 @@
 # Lead Manager
 
-Lead management system with integrated VoIP features.
+Sistema de gerenciamento de leads com recursos de VoIP integrado, desenvolvido utilizando conceitos de Arquitetura Evolutiva e Domain-Driven Design (DDD).
+
+## 🏗️ Arquitetura
+
+Este projeto foi desenvolvido adpatando os princípios de:
+
+### Domain-Driven Design (DDD)
+- **Domínios Bounded Contexts:**
+  - Auth: Responsável pela autenticação e autorização
+  - Client: Gerenciamento de clientes/leads
+  - Voip: Integração com serviços de telefonia
+  - Shared: Recursos compartilhados entre domínios
+
+- **Camadas:**
+  - Domain: Entidades e regras de negócio
+  - Application: Casos de uso e serviços de aplicação
+  - Infrastructure: Implementações concretas e adaptadores
+  - Interfaces: Controllers e endpoints da API
+
+### Arquitetura Evolutiva
+- **Princípios aplicados:**
+  - Desacoplamento entre módulos
+  - Independência de tecnologia
+  - Testabilidade incorporada
+  - Incrementalidade
+  - Adaptabilidade
+
+## 🔄 Evolução da Arquitetura
+
+O projeto foi estruturado para evoluir de forma incremental:
+
+1. **Fase 1:** Implementação básica do CRUD de clientes
+2. **Fase 2:** Adição de autenticação e autorização
+3. **Fase 3:** Integração com serviços VoIP
+4. **Fase 4:** Sistema de notificações
+5. **Fase 5:** Recursos avançados de gestão de leads
+
+Cada fase foi implementada seguindo os princípios de:
+- Testabilidade
+- Desacoplamento
+- Manutenibilidade
+- Escalabilidade
+
 
 ## 🚀 Technologies
 
@@ -379,7 +421,6 @@ lead_manager/
 ├── tests/
 └── docker/
 ```
-
 ## 🤝 Contributing
 
 1. Fork the project
