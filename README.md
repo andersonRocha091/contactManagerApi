@@ -1,47 +1,47 @@
 # Lead Manager
 
-Sistema de gerenciamento de leads com recursos de VoIP integrado, desenvolvido utilizando conceitos de Arquitetura Evolutiva e Domain-Driven Design (DDD).
+Lead management system with integrated VoIP features, developed using concepts of Evolutionary Architecture and Domain-Driven Design (DDD).
 
-## 🏗️ Arquitetura
+## 🏗️ Architecture
 
-Este projeto foi desenvolvido adpatando os princípios de:
+This project was developed by adapting the principles of:
 
 ### Domain-Driven Design (DDD)
-- **Domínios Bounded Contexts:**
-  - Auth: Responsável pela autenticação e autorização
-  - Client: Gerenciamento de clientes/leads
-  - Voip: Integração com serviços de telefonia
-  - Shared: Recursos compartilhados entre domínios
+- **Bounded Contexts:**
+    - Auth: Responsible for authentication and authorization
+    - Client: Client/lead management
+    - Voip: Integration with telephony services
+    - Shared: Shared resources between domains
 
-- **Camadas:**
-  - Domain: Entidades e regras de negócio
-  - Application: Casos de uso e serviços de aplicação
-  - Infrastructure: Implementações concretas e adaptadores
-  - Interfaces: Controllers e endpoints da API
+- **Layers:**
+    - Domain: Entities and business rules
+    - Application: Use cases and application services
+    - Infrastructure: Concrete implementations and adapters
+    - Interfaces: API controllers and endpoints
 
-### Arquitetura Evolutiva
-- **Princípios aplicados:**
-  - Desacoplamento entre módulos
-  - Independência de tecnologia
-  - Testabilidade incorporada
-  - Incrementalidade
-  - Adaptabilidade
+### Evolutionary Architecture
+- **Applied principles:**
+    - Decoupling between modules
+    - Technology independence
+    - Built-in testability
+    - Incrementality
+    - Adaptability
 
-## 🔄 Evolução da Arquitetura
+## 🔄 Architecture Evolution
 
-O projeto foi estruturado para evoluir de forma incremental:
+The project was structured to evolve incrementally:
 
-1. **Fase 1:** Implementação básica do CRUD de clientes
-2. **Fase 2:** Adição de autenticação e autorização
-3. **Fase 3:** Integração com serviços VoIP
-4. **Fase 4:** Sistema de notificações
-5. **Fase 5:** Recursos avançados de gestão de leads
+1. **Phase 1:** Basic implementation of client CRUD
+2. **Phase 2:** Addition of authentication and authorization
+3. **Phase 3:** Integration with VoIP services
+4. **Phase 4:** Notification system
+5. **Phase 5:** Advanced lead management features
 
-Cada fase foi implementada seguindo os princípios de:
-- Testabilidade
-- Desacoplamento
-- Manutenibilidade
-- Escalabilidade
+Each phase was implemented following the principles of:
+- Testability
+- Decoupling
+- Maintainability
+- Scalability
 
 
 ## 🚀 Technologies
