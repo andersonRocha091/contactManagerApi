@@ -21,19 +21,15 @@ class ClientService
     public function createClient(array $data)
     {
         $this->validateClientData($data, null, 'create');
-
-        // Create client
-        // Dispatch event for potential webhooks
-        $client = $this->clientRepository->create($data); 
-        // Event::dispatch(new ClientCreated($client));
+        $client = $this->clientRepository->create($data);
         return $client;
     }
 
     public function updateClient(int $clientId, array $data, ?UpdateClientRequest $request)
-    {   
+    {
         $this->validateClientData($data, $clientId, 'update');
 
-        $updateFields = $this->prepareDataToUpdate($request);
+        $updateFields = $this->prepareDataToUpdate($data, $request);
         return $this->clientRepository->update($clientId, $updateFields);
     }
 
@@ -48,21 +44,30 @@ class ClientService
      * @param UpdateClientRequest $request The request object containing the client data.
      * @return array An associative array containing the fields to be updated.
      */
-    private function prepareDataToUpdate(UpdateClientRequest $request): array {
-
+    private function prepareDataToUpdate($data, ?UpdateClientRequest $request): array
+    {
+        if(empty($request)) {
+            return $data;
+        }
         $requiredFields = ['name', 'email'];
         $optionalFields = [
-            'mobile', 'district', 'phone', 
-            'address', 'city', 'state', 
-            'zip', 'picture', 'age'
+            'mobile',
+            'district',
+            'phone',
+            'address',
+            'city',
+            'state',
+            'zip',
+            'picture',
+            'age'
         ];
 
         $fieldsMustUpdate = [];
 
-        foreach($requiredFields as $field) {
+        foreach ($requiredFields as $field) {
             $fieldsMustUpdate[$field] = $request->input($field);
         }
-        foreach($optionalFields as $field) {
+        foreach ($optionalFields as $field) {
             if ($request->has($field)) {
                 $fieldsMustUpdate[$field] = $request->input($field);
             }
@@ -96,7 +101,7 @@ class ClientService
 
     protected function validateClientData(array $data, ?int $clientId, string $operation)
     {
-        
+
         switch ($operation) {
             case 'create':
                 if (empty($data['name']) || empty($data['email'])) {
@@ -109,12 +114,12 @@ class ClientService
                 }
                 if (empty($data['name']) || empty($data['email'])) {
                     throw new \InvalidArgumentException('Name and email are required.');
-                } 
+                }
                 break;
             case 'delete':
                 if (empty($clientId)) {
                     throw new \InvalidArgumentException('ID is required for delete.');
-                }   
+                }
             default:
                 # code...
                 break;

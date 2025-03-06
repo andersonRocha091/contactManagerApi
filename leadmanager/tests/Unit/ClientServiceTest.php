@@ -10,11 +10,12 @@ use Mockery;
 use InvalidArgumentException;
 use App\Domains\Shared\Exceptions\ClientNotFoundException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-
+use App\Domains\Client\Requests\UpdateClientRequest;
 class ClientServiceTest extends TestCase
 {
     protected $clientService;
     protected $clientRepository;
+    protected $mockedUpdateRequest;
 
     protected function setUp(): void
     {
@@ -22,6 +23,7 @@ class ClientServiceTest extends TestCase
 
         $this->clientRepository = Mockery::mock(ClientRepositoryInterface::class);
         $this->clientService = new ClientService($this->clientRepository);
+        $this->mockedUpdateRequest = new UpdateClientRequest();
     }
 
     public function testCreateClient()
@@ -68,13 +70,13 @@ class ClientServiceTest extends TestCase
             'name' => 'Jane Doe',
             'email' => 'jane.doe@example.com',
         ];
-
+        
         $this->clientRepository->shouldReceive('update')
             ->once()
             ->with($clientId, $data)
             ->andReturn(new Client($data));
 
-        $client = $this->clientService->updateClient($clientId, $data);
+        $client = $this->clientService->updateClient($clientId, $data, null);
 
         $this->assertInstanceOf(Client::class, $client);
         $this->assertEquals('Jane Doe', $client->name);
@@ -95,7 +97,7 @@ class ClientServiceTest extends TestCase
 
         $this->expectException(ModelNotFoundException::class);
 
-        $this->clientService->updateClient($clientId, $data);
+        $this->clientService->updateClient($clientId, $data, null);
     }
 
     public function testUpdateClientValidationFails()
@@ -108,7 +110,7 @@ class ClientServiceTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Name and email are required.');
 
-                $this->clientService->updateClient($clientId, $data);
+                $this->clientService->updateClient($clientId, $data, null);
     }
 
     public function testDeleteClient()
