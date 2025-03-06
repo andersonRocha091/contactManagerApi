@@ -34,7 +34,7 @@ Lead Manager is a system for managing leads that allows:
 
 ```bash
 # Clone this repository
-git clone https://github.com/andersonRocha091
+git clone https://github.com/andersonRocha091/ontactManagerApi
 
 # Access the project folder
 cd lead_manager
@@ -75,6 +75,14 @@ DB_PASSWORD=your_password
 TWILIO_SID=your_twilio_sid
 TWILIO_TOKEN=your_twilio_token
 TWILIO_FROM=your_twilio_number
+
+MAIL_MAILER=smtp
+MAIL_HOST=<your smtp provider>
+MAIL_PORT=PORT
+MAIL_USERNAME=<your smtp user>
+MAIL_PASSWORD=<your sempt password>
+
+JWT_SECRET=<your jwt secret>
 ```
 
 ### Twilio
@@ -88,30 +96,262 @@ To configure Twilio:
 
 ## 📝 API Endpoints
 
-### Authentication
+### Autenticação
 
-```
-POST /api/register - Register a new user
-POST /api/login - Login
-POST /api/logout - Logout
-GET /api/user - Get authenticated user data
+#### Registrar Usuário
+```http
+POST /api/register
+
+Request:
+{
+    "name": "João Silva",
+    "email": "joao@email.com",
+    "password": "senha123",
+    "password_confirmation": "senha123"
+}
+
+Response: (201 Created)
+{
+    "status": "success",
+    "message": "Usuário registrado com sucesso",
+    "data": {
+        "id": 1,
+        "name": "João Silva",
+        "email": "joao@email.com",
+        "created_at": "2024-03-04T10:00:00.000000Z"
+    }
+}
 ```
 
-### Clients
+#### Login
+```http
+POST /api/login
 
+Request:
+{
+    "email": "joao@email.com",
+    "password": "senha123"
+}
+
+Response: (200 OK)
+{
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "token_type": "bearer",
+    "expires_in": 3600
+}
 ```
-GET /api/client - List all clients
-GET /api/client/{id} - Get a specific client
-POST /api/client - Create a new client
-PUT /api/client/{id} - Update a client
-DELETE /api/client/{id} - Remove a client
+
+#### Logout
+```http
+POST /api/logout
+
+Headers:
+Authorization: Bearer {token}
+
+Response: (200 OK)
+{
+    "message": "Deslogado com sucesso"
+}
+```
+
+### Clientes
+
+#### Listar Clientes
+```http
+GET /api/client
+
+Headers:
+Authorization: Bearer {token}
+
+Response: (200 OK)
+{
+    "data": [
+        {
+            "id": 1,
+            "name": "Maria Santos",
+            "email": "maria@email.com",
+            "phone": "11999999999",
+            "address": "Rua das Flores, 123",
+            "city": "São Paulo",
+            "state": "SP",
+            "created_at": "2024-03-04T10:00:00.000000Z"
+        }
+    ],
+    "meta": {
+        "current_page": 1,
+        "total": 10,
+        "per_page": 15
+    }
+}
+```
+
+#### Obter Cliente
+```http
+GET /api/client/{id}
+
+Headers:
+Authorization: Bearer {token}
+
+Response: (200 OK)
+{
+    "data": {
+        "id": 1,
+        "name": "Maria Santos",
+        "email": "maria@email.com",
+        "phone": "11999999999",
+        "address": "Rua das Flores, 123",
+        "city": "São Paulo",
+        "state": "SP",
+        "created_at": "2024-03-04T10:00:00.000000Z"
+    }
+}
+```
+
+#### Criar Cliente
+```http
+POST /api/client
+
+Headers:
+Authorization: Bearer {token}
+
+Request:
+{
+    "name": "Pedro Oliveira",
+    "email": "pedro@email.com",
+    "phone": "11988888888",
+    "address": "Av. Paulista, 1000",
+    "city": "São Paulo",
+    "state": "SP",
+    "zip": "01310-100",
+    "age": 30
+}
+
+Response: (201 Created)
+{
+    "data": {
+        "id": 2,
+        "name": "Pedro Oliveira",
+        "email": "pedro@email.com",
+        "phone": "11988888888",
+        "address": "Av. Paulista, 1000",
+        "city": "São Paulo",
+        "state": "SP",
+        "zip": "01310-100",
+        "age": 30,
+        "created_at": "2024-03-04T11:00:00.000000Z"
+    }
+}
+```
+
+#### Atualizar Cliente
+```http
+PUT /api/client/{id}
+
+Headers:
+Authorization: Bearer {token}
+
+Request:
+{
+    "name": "Pedro Silva Oliveira",
+    "phone": "11977777777"
+}
+
+Response: (200 OK)
+{
+    "data": {
+        "id": 2,
+        "name": "Pedro Silva Oliveira",
+        "email": "pedro@email.com",
+        "phone": "11977777777",
+        "address": "Av. Paulista, 1000",
+        "city": "São Paulo",
+        "state": "SP",
+        "updated_at": "2024-03-04T12:00:00.000000Z"
+    }
+}
+```
+
+#### Remover Cliente
+```http
+DELETE /api/client/{id}
+
+Headers:
+Authorization: Bearer {token}
+
+Response: (204 No Content)
 ```
 
 ### VoIP
 
+#### Gerar Token
+```http
+POST /api/voip/token
+
+Headers:
+Authorization: Bearer {token}
+
+Response: (200 OK)
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "expires_in": 3600
+}
 ```
-POST /api/voip/token - Generate token for calls
-POST /api/voip/call - Initiate a call
+
+#### Iniciar Chamada
+```http
+POST /api/voip/call
+
+Headers:
+Authorization: Bearer {token}
+
+Request:
+{
+    "to": "+5511999999999",
+    "from": "+5511988888888"
+}
+
+Response: (200 OK)
+{
+    "status": "iniciado",
+    "sid": "CA123456789",
+    "message": "Chamada iniciada com sucesso"
+}
+```
+
+### Códigos de Erro
+
+```http
+400 Bad Request
+{
+    "message": "Dados inválidos",
+    "errors": {
+        "email": ["O campo email é obrigatório"],
+        "phone": ["O telefone deve ser um número válido"]
+    }
+}
+
+401 Unauthorized
+{
+    "message": "Não autorizado"
+}
+
+404 Not Found
+{
+    "message": "Cliente não encontrado"
+}
+
+422 Unprocessable Entity
+{
+    "message": "Dados inválidos",
+    "errors": {
+        "email": ["Este email já está em uso"]
+    }
+}
+
+500 Internal Server Error
+{
+    "message": "Erro interno do servidor"
+}
 ```
 
 ## 🧪 Tests
@@ -120,7 +360,7 @@ To run the tests:
 
 ```bash
 # Run all tests
-docker exec -it app php artisan test
+docker exec -it app bash -c "cd /var/www/leadmanager  && php artisan test --filter=TestName"
 
 # Run specific tests
 docker exec -it app php artisan test --filter=TestName
