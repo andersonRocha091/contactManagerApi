@@ -355,6 +355,31 @@ Response: (200 OK)
 }
 ```
 
+#### Webhook integração huggy
+```http
+POST /api/webhook
+
+Request:
+{
+    {
+    "name":"ivan",
+    "email":"ivan2@gmail.com",
+    "phone": "75999125623",
+    "address":"asdfasdfasdf",
+    "city":"Feira de Santana",
+    "state":"Bahia",
+    "zip":"45011256",
+    "picture":"pic",
+    "age":12
+}
+}
+
+Response: (200 OK)
+{
+}
+```
+
+
 ### Códigos de Erro
 
 ```http
@@ -413,6 +438,7 @@ lead_manager/
 │   │   ├── Client/
 │   │   ├── Shared/
 │   │   └── Voip/
+│   │   └── Webhook/
 │   ├── Http/
 │   └── Providers/
 ├── config/
