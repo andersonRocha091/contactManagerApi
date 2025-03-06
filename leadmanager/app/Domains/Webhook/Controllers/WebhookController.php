@@ -44,7 +44,6 @@ class WebhookController extends Controller
                 'code' => $e->getCode()
             ], $e->getCode());
         } catch (\Throwable $th) {
-            // Unexpected errors
             return response()->json([
                 'error' => 'Internal server error'
             ], 500);

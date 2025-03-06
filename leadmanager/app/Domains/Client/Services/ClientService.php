@@ -3,10 +3,7 @@
 namespace App\Domains\Client\Services;
 
 use App\Domains\Client\Repositories\ClientRepositoryInterface;
-use App\Domains\Client\Entities\Client;
 use App\Domains\Client\Requests\UpdateClientRequest;
-use App\Domains\Shared\Events\ClientCreated;
-use Illuminate\Support\Facades\Event;
 use App\Domains\Shared\Exceptions\ClientNotFoundException;
 
 class ClientService

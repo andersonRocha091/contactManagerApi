@@ -17,14 +17,26 @@ class ClientController extends Controller
 
     public function __construct(ClientService $clientService) {
         $this->clientService = $clientService;
-        // $this->middleware('auth');
     }
 
+     /**
+        * Create a new client.
+        *
+        * @param CreateClientRequest $request The request object containing client creation data.
+        * @return \Illuminate\Http\Response
+        */
     public function create(CreateClientRequest $request){
         $client = $this->clientService->createClient($request->validated());
         return response()->json(['client' => $client]);
     }
 
+    /**
+     * Update the specified client in storage.
+     *
+     * @param  \App\Http\Requests\UpdateClientRequest  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(UpdateClientRequest $request, $id) {
         
         $updateFields = [
